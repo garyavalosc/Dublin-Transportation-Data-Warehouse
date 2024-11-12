@@ -38,9 +38,9 @@ The ingested data is stored in Snowflake under the `RAW` schema, where it's then
 │   └── create-tables.sql        # SQL script to create initial Snowflake tables
 ├── README.md                    # Project documentation
 └── additional_documentation.md  # Explanation of approach, decisions, and challenges
-
+  ```
 # Setup Instructions
-   ```
+ 
 1. Clone the Repository
 ```
    git clone https://github.com/garyavalosc/dublin-transportation-pipeline
