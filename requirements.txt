@@ -1,0 +1,25 @@
+# Data processing
+pandas==1.5.3
+numpy==1.24.3
+
+# Snowflake connector
+snowflake-connector-python==3.0.1
+
+# Apache Airflow and related dependencies
+apache-airflow==2.6.1
+apache-airflow-providers-http==4.3.0
+apache-airflow-providers-snowflake==4.2.0
+
+# HTTP requests
+requests==2.31.0
+
+# Data validation
+pandas-schema==0.4.0
+
+# Testing
+pytest==7.3.1
+
+# Code formatting
+black==23.3.0
+flake8==6.0.0
+isort==5.12.0
