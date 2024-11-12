@@ -2,71 +2,71 @@
 CREATE SCHEMA IF NOT EXISTS RAW;
 CREATE SCHEMA IF NOT EXISTS PROCESSED;
 
--- Raw tables for staging
+-- Luas Passengers Table (Raw data as it comes from CSO)
 CREATE OR REPLACE TABLE RAW.LUAS_PASSENGERS (
-    date DATE,
-    passenger_count INTEGER,
-    year INTEGER,
-    month INTEGER,
-    created_at TIMESTAMP_NTZ,
-    source VARCHAR(50)
+    STATISTIC VARCHAR(50),
+    STATISTIC_LABEL VARCHAR(100),
+    TLIST VARCHAR(50),
+    YEAR NUMBER,
+    C01885V02316 VARCHAR(10),
+    MONTH VARCHAR(20),
+    UNIT VARCHAR(20),
+    VALUE NUMBER,
+    CREATED_AT TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
 );
 
+-- Dublin Bus Passengers Table (Raw data as it comes from CSO)
 CREATE OR REPLACE TABLE RAW.DUBLIN_BUS_PASSENGERS (
-    date DATE,
-    passenger_count INTEGER,
-    year INTEGER,
-    month INTEGER,
-    created_at TIMESTAMP_NTZ,
-    source VARCHAR(50)
+    STATISTIC VARCHAR(50),
+    STATISTIC_LABEL VARCHAR(100),
+    TLIST VARCHAR(50),
+    YEAR NUMBER,
+    C01885V02316 VARCHAR(10),
+    MONTH VARCHAR(20),
+    UNIT VARCHAR(20),
+    VALUE NUMBER,
+    CREATED_AT TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
 );
 
-CREATE OR REPLACE TABLE RAW.WEATHER_DATA (
-    date DATE,
-    rainfall_mm FLOAT,
-    indicator INTEGER,
-    created_at TIMESTAMP_NTZ,
-    source VARCHAR(50),
-    station VARCHAR(100)
+-- Weather Data Table (Raw data structure from Met Éireann)
+CREATE OR REPLACE TABLE DUBLIN_TRANSPORTATION.RAW.WEATHER_DATA (
+    DATE DATE,
+    IND1 NUMBER,             -- First "ind" column
+    RAINFALL_MM FLOAT,       -- Rainfall in mm
+    IND2 NUMBER,             -- Second "ind" column
+    MAXT FLOAT,              -- Maximum temperature
+    IND3 NUMBER,             -- Third "ind" column
+    MINT FLOAT,              -- Minimum temperature
+    GMIN FLOAT,              -- Ground minimum temperature
+    SOIL FLOAT,              -- Soil temperature
+    CREATED_AT TIMESTAMP_NTZ -- Timestamp for data creation
 );
 
+-- Dublin Bikes Table (Raw data from API)
 CREATE OR REPLACE TABLE RAW.DUBLIN_BIKES (
-    station_id STRING,
-    timestamp TIMESTAMP_NTZ,
-    bikes_available INTEGER,
-    docks_available INTEGER,
-    is_installed BOOLEAN,
-    is_renting BOOLEAN,
-    is_returning BOOLEAN,
-    created_at TIMESTAMP_NTZ,
-    source VARCHAR(50)
+    SYSTEM_ID VARCHAR(50),
+    LAST_REPORTED TIMESTAMP_NTZ,
+    STATION_ID VARCHAR(50),
+    NUM_BIKES_AVAILABLE NUMBER,
+    NUM_DOCKS_AVAILABLE NUMBER,
+    IS_INSTALLED BOOLEAN,
+    IS_RENTING BOOLEAN,
+    IS_RETURNING BOOLEAN,
+    NAME VARCHAR(100),
+    SHORT_NAME VARCHAR(100),
+    ADDRESS VARCHAR(200),
+    LAT FLOAT,
+    LON FLOAT,
+    REGION_ID VARCHAR(50),
+    CAPACITY NUMBER,
+    CREATED_AT TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
 );
 
+-- Cycle Counts Table (Raw data structure)
 CREATE OR REPLACE TABLE RAW.CYCLE_COUNTS (
-    timestamp TIMESTAMP_NTZ,
-    location VARCHAR(100),
-    direction VARCHAR(50),
-    count INTEGER,
-    created_at TIMESTAMP_NTZ,
-    source VARCHAR(50)
+    TIMESTAMP TIMESTAMP_NTZ,
+    LOCATION VARCHAR(200),
+    DIRECTION VARCHAR(50),
+    COUNT NUMBER,
+    CREATED_AT TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
 );
-
--- Create processed tables for analytics
-CREATE OR REPLACE TABLE PROCESSED.DAILY_TRANSPORT_METRICS (
-    date DATE,
-    transport_type VARCHAR(50),
-    passenger_count INTEGER,
-    rainfall_mm FLOAT,
-    created_at TIMESTAMP_NTZ,
-    updated_at TIMESTAMP_NTZ
-);
-
--- Create views for easy querying
-CREATE OR REPLACE VIEW PROCESSED.VW_MONTHLY_METRICS AS
-SELECT 
-    DATE_TRUNC('MONTH', date) as month,
-    transport_type,
-    SUM(passenger_count) as total_passengers,
-    AVG(rainfall_mm) as avg_rainfall
-FROM PROCESSED.DAILY_TRANSPORT_METRICS
-GROUP BY 1, 2;
